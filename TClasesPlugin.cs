@@ -28,5 +28,10 @@ namespace TClases
         {
             base.Dispose(disposing);
         }
+        public void Zukulencia()
+        {
+        	
+        }
+        
     }
 }
