@@ -6,11 +6,11 @@ using System.Runtime.InteropServices;
 // conjunto de atributos. Cambie estos atributos para modificar la información
 // asociada con un ensamblado.
 [assembly: AssemblyTitle("TClases")]
-[assembly: AssemblyDescription("")]
+[assembly: AssemblyDescription("Clases para Tshock by GNR092")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("Microsoft")]
+[assembly: AssemblyCompany("")]
 [assembly: AssemblyProduct("TClases")]
-[assembly: AssemblyCopyright("Copyright © Microsoft 2016")]
+[assembly: AssemblyCopyright("Copyright © GNR0922016")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
