@@ -1,33 +1,38 @@
 ﻿using System;
-using System.Collections.Generic;
+using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Terraria;
-using TerrariaApi;
-using TerrariaApi.Server;
+using System.Reflection;
 using TShockAPI;
+using Terraria;
+using TerrariaApi.Server;
 using TClases;
 using TClases.DB;
-using System.IO;
 
 namespace TClases
 {
     [ApiVersion(1,23)]
     public class TClasesPlugin : TerrariaPlugin
     {
-        public override string Name { get { return "TClases"; } }
+        public override string Name {
+            get {
+                string s = "TClases Update " + this.Version.Build;
+#if __PREVIEW
+                s += " Preview";
+#endif
+                return s; } }
         public override string Author { get { return "GNR092"; } }
-        public override string Description { get { return ""; } }
-        public override Version Version { get { return new Version("1.0.0"); } }
+        public override string Description { get { return "Clases automatizadas para Tshock by GNR092"; } }
+        public override Version Version { get { return Assembly.GetExecutingAssembly().GetName().Version; } }
         public TClasesPlugin(Main game) : base(game) {}
 
-        private StatsManager statsmanager = new StatsManager();
+        public static StatsManager statsmanager = new StatsManager();
         private TClassDamage ClassDamage = new TClassDamage();
-        private static Config Config;
+        public static TClassCharacterInfo tClassCharacterInfo = new TClassCharacterInfo();
+        public static Config Config;
 
         public override void Initialize()
         {
+            intro();
             statsmanager.DBConnect();
             string path = Path.Combine(TShock.SavePath, "TClassConfig.json");
             Config = Config.Read(path);
@@ -38,15 +43,34 @@ namespace TClases
 
             ServerApi.Hooks.ServerJoin.Register(this, statsmanager.Onjoin);
             ServerApi.Hooks.NpcStrike.Register(this, ClassDamage.iniciar);
-
+            ServerApi.Hooks.GameUpdate.Register(this, ClassDamage.Game_update);
             StatsManager.BlockNPCs = Config.BlockNPCs;
         }
+        protected void intro()
+        {
+            
+            Console.ForegroundColor = ConsoleColor.Red;
+            
+            Console.Write(" TClass Update ");
+            Console.ForegroundColor = ConsoleColor.Green;
+            Console.Write(this.Version.Build);
 
+            Console.WriteLine();
+            Console.ForegroundColor = ConsoleColor.Green;
+            Console.Write(" Copyright (C) GNR092 - ");
+
+            Console.ForegroundColor = ConsoleColor.Blue;
+            Console.Write("https://github.com/GNR092");
+
+            Console.WriteLine("\r\n");
+            Console.WriteLine();
+            Console.ResetColor();
+        }
         protected override void Dispose(bool disposing)
         {
             if (disposing)
             {
-
+                ServerApi.Hooks.GameUpdate.Deregister(this, ClassDamage.Game_update);
             }
             base.Dispose(disposing);
         }       
