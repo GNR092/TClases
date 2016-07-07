@@ -52,6 +52,14 @@ namespace TClases.DB
                 new SqlColumn("_Int", MySqlDbType.Int32),
                 new SqlColumn("Agi", MySqlDbType.Int32),
                 new SqlColumn("Lck", MySqlDbType.Int32)));
+            if (!TShock.Groups.GroupExists(Permisos.ClassGroup[0]) || !TShock.Groups.GroupExists(Permisos.ClassGroup[1]) || !TShock.Groups.GroupExists(Permisos.ClassGroup[2]) || !TShock.Groups.GroupExists(Permisos.ClassGroup[3]) || !TShock.Groups.GroupExists(Permisos.ClassGroup[4]))
+            {
+                TShock.Groups.AddGroup(Permisos.ClassGroup[3], "", "tshock.world.modify,tshock.account.login,tshock.partychat,tshock.canchat", "255,255,255");
+                TShock.Groups.AddGroup(Permisos.ClassGroup[4], Permisos.ClassGroup[3], "tclass.level,tclass.guerrero,tclass.arquero,tclass.mago", "255,255,255");
+                TShock.Groups.AddGroup(Permisos.ClassGroup[0], Permisos.ClassGroup[3],"","255,255,255");
+                TShock.Groups.AddGroup(Permisos.ClassGroup[1], Permisos.ClassGroup[3], "", "255,255,255");
+                TShock.Groups.AddGroup(Permisos.ClassGroup[2], Permisos.ClassGroup[3], "", "255,255,255");
+            }
         }
 
         public void Onjoin(JoinEventArgs e)

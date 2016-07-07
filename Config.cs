@@ -56,6 +56,7 @@ namespace TClases
         { 485, true },  //Grubby
         { 486, true },  //Sluggy
         { 487, true },  //Buggy
+        {488,true}, //TargetDummy
         };
 
         public void Write(string path)

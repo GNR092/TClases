@@ -51,8 +51,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ClassComando.cs" />
     <Compile Include="Config.cs" />
     <Compile Include="DB\StatsManager.cs" />
+    <Compile Include="Permisos.cs" />
     <Compile Include="TClasesPlugin.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="TClassDamage.cs" />
