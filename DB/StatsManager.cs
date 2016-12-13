@@ -7,13 +7,12 @@ using Mono.Data.Sqlite;
 using MySql.Data.MySqlClient;
 using TShockAPI;
 using TShockAPI.DB;
-using TerrariaApi.Server;
 
 namespace TClases.DB
 {
     public class StatsManager
     {
-        private IDbConnection db;
+        public static IDbConnection db;
         public static Dictionary<int, bool> BlockNPCs = new Dictionary<int, bool>();
 
         public void DBConnect()
@@ -35,15 +34,16 @@ namespace TClases.DB
                     break;
 
                 case "sqlite":
-                    string sql = Path.Combine(TShock.SavePath, "Permabuffs.sqlite");
+                    string sql = Path.Combine(TShock.SavePath, "TClass.sqlite");
                     db = new SqliteConnection(string.Format("uri=file://{0},Version=3", sql));
                     break;
             }
 
             var sqlCreator = new SqlTableCreator(db, db.GetSqlType() == SqlType.Sqlite ? (IQueryBuilder)new SqliteQueryCreator() : new MysqlQueryCreator());
 
-            sqlCreator.EnsureTableStructure(new SqlTable("TClass",
-                new SqlColumn("UserName", MySqlDbType.VarChar) { Length = 32, Primary = true, Unique = true },
+            sqlCreator.EnsureTableStructure(new SqlTable("tclass",
+                new SqlColumn("ID", MySqlDbType.Int32) { Primary = true, Unique = true, AutoIncrement = true },
+                new SqlColumn("UserName", MySqlDbType.VarChar) { Length = 32 },
                 new SqlColumn("Clase",MySqlDbType.VarChar){Length = 32},
                 new SqlColumn("Level", MySqlDbType.Int32),
                 new SqlColumn("Exp", MySqlDbType.Int32),
@@ -62,7 +62,7 @@ namespace TClases.DB
             }
         }
 
-        public void Onjoin(JoinEventArgs e)
+        public void Onjoin(TerrariaApi.Server.JoinEventArgs e)
         {
             var player = TShock.Players[e.Who].Name;
 
@@ -72,14 +72,16 @@ namespace TClases.DB
 
         public void createDBInfo(string UserName)
         {
-            db.Query("INSERT INTO TClass (UserName, Clase, Level, Exp, Str, Vit, _Int, Agi, Lck) VALUES (@0,@1,@2,@3,@4,@5,@6,@7,@8);", UserName, "Novato", 1, 0, 0, 0, 0, 0, 0);
+                string query = "INSERT INTO tclass (UserName, Clase, Level, Exp, Str, Vit, _Int, Agi, Lck) VALUES (@0,@1,@2,@3,@4,@5,@6,@7,@8)";
+                db.Query(query, UserName, "Novato", 1, 0, 0, 0, 0, 0, 0);
         }
 
         public bool loadDBInfo(string UserName)
         {
             try
             {
-                using (var reader = TShock.DB.QueryReader("SELECT * FROM tclass WHERE UserName=@0;", UserName))
+                string query = "SELECT * FROM tclass WHERE UserName=@0;";
+                using (var reader = db.QueryReader(query,UserName))
                 {
                     if (reader.Read())
                     {
@@ -110,7 +112,8 @@ namespace TClases.DB
         public TClassCharacterInfo GetInfo(TClassCharacterInfo usename)
         {
             object name = usename.UserName;
-                using (var reader = TShock.DB.QueryReader("SELECT * FROM tclass WHERE UserName=@0;", name))
+            string query = "SELECT * FROM tclass WHERE UserName=@0;";
+                using (var reader = db.QueryReader(query, name))
                 {
                     if (reader.Read())
                     {

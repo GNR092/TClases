@@ -1,12 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Microsoft.Xna.Framework;
+using TClases;
 using TShockAPI;
 using TShockAPI.DB;
-using TClases;
-using TClases.DB;
 
 namespace TClases
 {
@@ -15,6 +12,8 @@ namespace TClases
         #region Level
         public static void LevelClass(CommandArgs args)
         {
+            //fix
+            TClassCharacterInfo info1 = TClasesPlugin.statsmanager.GetUserByName(args.Player.Name);
             if (args.Player.IsLoggedIn == false)
             {
                 args.Player.SendMessage("Porfavor inicie sesion", Color.Silver);
@@ -74,5 +73,12 @@ namespace TClases
             args.Player.SendSuccessMessage("Felicidades ustes ahora es: " + info.Clase);
         }
         #endregion
+
+        public static void TReload(CommandArgs args)
+        {
+            TClasesPlugin.Config = Config.Read(TClasesPlugin.path);
+            args.Player.SendSuccessMessage("TClassConfig Cargado");
+            return;
+        }
     }
 }

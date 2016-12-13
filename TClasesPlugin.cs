@@ -2,21 +2,18 @@
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using TShockAPI;
-using Terraria;
-using TerrariaApi.Server;
 using TClases;
 using TClases.DB;
+using Terraria;
+using TerrariaApi.Server;
+using TShockAPI;
 
 namespace TClases
 {
-    [ApiVersion(1,23)]
+    [ApiVersion(1,26)]
     public class TClasesPlugin : TerrariaPlugin
     {
-        public override string Name {
-            get {
-                string s = "TClases Update " + this.Version.Build;
-                return s; } }
+        public override string Name { get { string s = "TClases Update " + this.Version.Build; return s; } }
         public override string Author { get { return "GNR092"; } }
         public override string Description { get { return "Clases automatizadas para Tshock by GNR092"; } }
         public override Version Version { get { return Assembly.GetExecutingAssembly().GetName().Version; } }
@@ -26,12 +23,13 @@ namespace TClases
         private TClassDamage ClassDamage = new TClassDamage();
         public static TClassCharacterInfo tClassCharacterInfo = new TClassCharacterInfo();
         public static Config Config;
+        public static string path = Path.Combine(TShock.SavePath, "TClassConfig.json");
 
         public override void Initialize()
         {
             intro();
             statsmanager.DBConnect();
-            string path = Path.Combine(TShock.SavePath, "TClassConfig.json");
+            
             Config = Config.Read(path);
             if (!File.Exists(path))
             {
@@ -44,6 +42,7 @@ namespace TClases
             StatsManager.BlockNPCs = Config.BlockNPCs;
 
             Commands.ChatCommands.Add(new Command(Permisos.LevelP, ClassComando.LevelClass, "level") { AllowServer = false });
+            Commands.ChatCommands.Add(new Command("tclass.reload", ClassComando.TReload, "treload")); 
             Commands.ChatCommands.Add(new Command(Permisos.GuerreroP, ClassComando.GuerreroClass, "guerrero") { AllowServer = false, HelpText = "Cambia a clase Guerrero" });
             Commands.ChatCommands.Add(new Command(Permisos.ArqueroP, ClassComando.ArqueroClass, "arquero") { AllowServer = false, HelpText = "Cambia a clase Arquero" });
             Commands.ChatCommands.Add(new Command(Permisos.MagoP, ClassComando.MagoClass, "mago") { AllowServer = false, HelpText = "Cambia a clase Mago" });
@@ -59,7 +58,7 @@ namespace TClases
 
             Console.WriteLine();
             Console.ForegroundColor = ConsoleColor.Green;
-            Console.Write(" Copyright (C) GNR092 - ");
+            Console.Write(" Copyright ©GNR092 - ");
 
             Console.ForegroundColor = ConsoleColor.Blue;
             Console.Write("https://github.com/GNR092/TClases");

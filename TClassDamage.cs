@@ -3,21 +3,22 @@ using System.Linq;
 using TShockAPI;
 using TShockAPI.DB;
 using Terraria;
-using TerrariaApi.Server;
 using TClases.DB;
 using System.Collections.Generic;
+using Microsoft.Xna.Framework;
 
 namespace TClases
 {
     public class TClassDamage
     {
         StatsManager statsManager = new StatsManager();
+        Config cnf = new Config();
          /// <summary>
         /// Formato para este diccionario:
         /// Key: NPC
         /// Value: Una lista de los jugadores que han hecho daño con el NPC
         /// </summary>
-        private Dictionary<Terraria.NPC,List<PlayerDamage>> DamageDictionary = new Dictionary<NPC,List<PlayerDamage>>();
+        Dictionary<NPC,List<PlayerDamage>> DamageDictionary = new Dictionary<NPC,List<PlayerDamage>>();
         /// <summary>
         /// objeto de sincronización para el acceso al diccionario.  Usted debe obtener  
         /// una exclusión mutua a través de este objeto para obtener acceso al miembro de diccionario.
@@ -66,13 +67,17 @@ namespace TClases
             {
                 return;
             }
+          
             foreach (PlayerDamage damage in playerDamageList)
             {
                 if (damage.player == null || (player = TShockAPI.TShock.Players.FirstOrDefault(i => i != null && i.Index == damage.player.whoAmI)) == null)
                 {
                     continue;
                 }
-
+                if (damage.player.active == false)
+                {
+                    return;
+                }
                 exp = Convert.ToInt32(Math.Round(Convert.ToDouble(TClasesPlugin.Config.DmamagePoint) * damage.damage)); 
                 TClassCharacterInfo info = TClasesPlugin.statsmanager.GetUserByName(damage.player.name);
                 Color expc = new Color(0, 255, 255);
@@ -108,7 +113,7 @@ namespace TClases
 
                     info.Exp += exp;
 
-                    using (var reader = TShock.DB.QueryReader("UPDATE tclass set Exp=@0 WHERE UserName=@1;", info.Exp, info.UserName))
+                    using (var reader = StatsManager.db.QueryReader("UPDATE tclass set Exp=@0 WHERE UserName=@1;", info.Exp, info.UserName))
                     { NetMessage.SendData((int)PacketTypes.CreateCombatText, -1, -1, "+" + exp + " EXP", (int)expc.PackedValue, TShock.Players[damage.player.whoAmI].X, TShock.Players[damage.player.whoAmI].Y, 0, 0, 0, 0); }
                    
                     if (info.Exp >= lvlup)
@@ -123,7 +128,7 @@ namespace TClases
                             info.Agi++;
                             info.Lck++;
                             info.Exp = 0;
-                            using (var reader = TShock.DB.QueryReader("UPDATE tclass set Level = @0, Exp= @1, Str=@2, Vit=@3, _Int=@4, Agi=@5, Lck=@6  WHERE UserName=@7;", info.Level, info.Exp, info.Str, info.Vit, info._Int, info.Agi, info.Lck, info.UserName))
+                            using (var reader = StatsManager.db.QueryReader("UPDATE tclass set Level = @0, Exp= @1, Str=@2, Vit=@3, _Int=@4, Agi=@5, Lck=@6  WHERE UserName=@7;", info.Level, info.Exp, info.Str, info.Vit, info._Int, info.Agi, info.Lck, info.UserName))
                             {
                                 TShock.Players[damage.player.whoAmI].SendInfoMessage("Congratulations +LevelUp+ " + info.Clase + " LVL " + info.Level);
                                 TSPlayer.Server.SendInfoMessage("Congratulations " + damage.player.name + " +LevelUp+ " + info.Clase + " LVL " + info.Level);
@@ -137,7 +142,7 @@ namespace TClases
                         {
                             info.Level++;
                             info.Exp = 0;
-                            using (var reader = TShock.DB.QueryReader("UPDATE tclass set Level = @0, Exp= @1, Str=@2, Vit=@3, _Int=@4, Agi=@5, Lck=@6  WHERE UserName=@7;", info.Level, info.Exp, info.Str, info.Vit, info._Int, info.Agi, info.Lck, info.UserName))
+                            using (var reader = StatsManager.db.QueryReader("UPDATE tclass set Level = @0, Exp= @1, Str=@2, Vit=@3, _Int=@4, Agi=@5, Lck=@6  WHERE UserName=@7;", info.Level, info.Exp, info.Str, info.Vit, info._Int, info.Agi, info.Lck, info.UserName))
                             {
                                 TShock.Players[damage.player.whoAmI].SendInfoMessage("Congratulations +LevelUp+ " + info.Clase + " LVL " + info.Level);
                                 TSPlayer.Server.SendInfoMessage("Congratulations " + damage.player.name + " +LevelUp+ " + info.Clase + " LVL " + info.Level);
@@ -152,15 +157,15 @@ namespace TClases
                     #region Bloqueo de NPC(FIX)
                     if (StatsManager.BlockNPCs.ContainsKey(npc.netID))
                     {   //Fix <=======>
-                        //if (StatsManager.BlockNPCs[npc.netID])
-                        //{
-                        //    return;
-                        //}
-                        //Fix <=======>
                         if (npc.SpawnedFromStatue)
                         {
                             return;
                         }
+                        if (StatsManager.BlockNPCs[npc.netID])
+                        {
+                            return;
+                        }
+                        //Fix <=======>
                     }
                     #endregion
 
@@ -170,7 +175,7 @@ namespace TClases
                         int lvlup = info.Level * (896 + (896 * 43 / 100));
 
                         info.Exp += exp;
-                        using (var reader = TShock.DB.QueryReader("UPDATE tclass set Exp=@0 WHERE UserName=@1;", info.Exp, info.UserName))
+                        using (var reader = StatsManager.db.QueryReader("UPDATE tclass set Exp=@0 WHERE UserName=@1;", info.Exp, info.UserName))
                         { NetMessage.SendData((int)PacketTypes.CreateCombatText, -1, -1, "+" + exp + " EXP", (int)expc.PackedValue, TShock.Players[damage.player.whoAmI].X, TShock.Players[damage.player.whoAmI].Y, 0, 0, 0, 0); }
                         if (info.Exp >= lvlup)
                         {
@@ -182,7 +187,7 @@ namespace TClases
                             info.Agi++;
                             info.Lck++;
                             info.Exp = 0;
-                            using (var reader = TShock.DB.QueryReader("UPDATE tclass set Level = @0, Exp= @1, Str=@2, Vit=@3, _Int=@4, Agi=@5, Lck=@6  WHERE UserName=@7;", info.Level, info.Exp, info.Str, info.Vit, info._Int, info.Agi, info.Lck, info.UserName))
+                            using (var reader = StatsManager.db.QueryReader("UPDATE tclass set Level = @0, Exp= @1, Str=@2, Vit=@3, _Int=@4, Agi=@5, Lck=@6  WHERE UserName=@7;", info.Level, info.Exp, info.Str, info.Vit, info._Int, info.Agi, info.Lck, info.UserName))
                             {
                                 TShock.Players[damage.player.whoAmI].SendInfoMessage("Congratulations +LevelUp+ " + info.Clase + " LVL " + info.Level);
                                 TSPlayer.Server.SendInfoMessage("Congratulations " + damage.player.name + " +LevelUp+ " + info.Clase + " LVL " + info.Level);
@@ -199,7 +204,7 @@ namespace TClases
                         int lvlup = info.Level * (896 + (896 * 43 / 100));
 
                         info.Exp += exp;
-                        using (var reader = TShock.DB.QueryReader("UPDATE tclass set Exp=@0 WHERE UserName=@1;", info.Exp, info.UserName))
+                        using (var reader = StatsManager.db.QueryReader("UPDATE tclass set Exp=@0 WHERE UserName=@1;", info.Exp, info.UserName))
                         { NetMessage.SendData((int)PacketTypes.CreateCombatText, -1, -1, "+" + exp + " EXP", (int)expc.PackedValue, TShock.Players[damage.player.whoAmI].X, TShock.Players[damage.player.whoAmI].Y, 0, 0, 0, 0); }
                         if (info.Exp >= lvlup)
                         {
@@ -211,7 +216,7 @@ namespace TClases
                             info.Agi += 2;
                             info.Lck += 2;
                             info.Exp = 0;
-                            using (var reader = TShock.DB.QueryReader("UPDATE tclass set Level = @0, Exp= @1, Str=@2, Vit=@3, _Int=@4, Agi=@5, Lck=@6  WHERE UserName=@7;", info.Level, info.Exp, info.Str, info.Vit, info._Int, info.Agi, info.Lck, info.UserName))
+                            using (var reader = StatsManager.db.QueryReader("UPDATE tclass set Level = @0, Exp= @1, Str=@2, Vit=@3, _Int=@4, Agi=@5, Lck=@6  WHERE UserName=@7;", info.Level, info.Exp, info.Str, info.Vit, info._Int, info.Agi, info.Lck, info.UserName))
                             {
                                 TShock.Players[damage.player.whoAmI].SendInfoMessage("Congratulations +LevelUp+ " + info.Clase + " LVL " + info.Level);
                                 TSPlayer.Server.SendInfoMessage("Congratulations " + damage.player.name + " +LevelUp+ " + info.Clase + " LVL " + info.Level);
@@ -228,7 +233,7 @@ namespace TClases
                         int lvlup = info.Level * (896 + (896 * 43 / 100));
 
                         info.Exp += exp;
-                        using (var reader = TShock.DB.QueryReader("UPDATE tclass set Exp=@0 WHERE UserName=@1;", info.Exp, info.UserName))
+                        using (var reader = StatsManager.db.QueryReader("UPDATE tclass set Exp=@0 WHERE UserName=@1;", info.Exp, info.UserName))
                         { NetMessage.SendData((int)PacketTypes.CreateCombatText, -1, -1, "+" + exp + " EXP", (int)expc.PackedValue, TShock.Players[damage.player.whoAmI].X, TShock.Players[damage.player.whoAmI].Y, 0, 0, 0, 0); }
                         if (info.Exp >= lvlup)
                         {
@@ -240,7 +245,7 @@ namespace TClases
                             info.Agi++;
                             info.Lck++;
                             info.Exp = 0;
-                            using (var reader = TShock.DB.QueryReader("UPDATE tclass set Level = @0, Exp= @1, Str=@2, Vit=@3, _Int=@4, Agi=@5, Lck=@6  WHERE UserName=@7;", info.Level, info.Exp, info.Str, info.Vit, info._Int, info.Agi, info.Lck, info.UserName))
+                            using (var reader = StatsManager.db.QueryReader("UPDATE tclass set Level = @0, Exp= @1, Str=@2, Vit=@3, _Int=@4, Agi=@5, Lck=@6  WHERE UserName=@7;", info.Level, info.Exp, info.Str, info.Vit, info._Int, info.Agi, info.Lck, info.UserName))
                             {
                                 TShock.Players[damage.player.whoAmI].SendInfoMessage("Congratulations +LevelUp+ " + info.Clase + " LVL " + info.Level);
                                 TSPlayer.Server.SendInfoMessage("Congratulations " + damage.player.name + " +LevelUp+ " + info.Clase + " LVL " + info.Level);
@@ -259,17 +264,21 @@ namespace TClases
         #endregion
 
         #region iniciarNpcStrikeEventArgs
-        public void iniciar(NpcStrikeEventArgs e)
+        public void iniciar(TerrariaApi.Server.NpcStrikeEventArgs e)
         {
             if (e.Handled)
             {
                 return;
             }
-            if (e.Player == null || e.Npc.active == false || e.Npc.life <= 0)
+            if (e.Player == null || e.Npc.active == false || e.Npc.life <= 0 || e.Npc.SpawnedFromStatue == true || e.Npc.netID == 488)
             {
                 return;
             }
             if (!(statsManager.loadDBInfo(e.Player.name)))
+            {
+                return;
+            }
+            if (cnf.BlockNPCs.ContainsKey(e.Npc.netID))
             {
                 return;
             }
@@ -281,56 +290,58 @@ namespace TClases
 
             AddNPCDamage(e.Npc, e.Player, e.Damage, e.Critical);
 
-            #region Cuerpo a cuerpo
-            if (TShock.Players[e.Player.whoAmI].SelectedItem.melee)
-            {
-                if (e.Damage >= e.Npc.life)
+                #region Cuerpo a cuerpo
+                if (TShock.Players[e.Player.whoAmI].SelectedItem.melee)
                 {
-                    return;
-                }
-                int damage = (info.Str * 3);
-                if (damage>0)
-                {
-                    NetMessage.SendData((int)PacketTypes.CreateCombatText, -1, -1, "+" + damage, (int)melee.PackedValue, e.Npc.position.X, e.Npc.position.Y, 0, 0, 0, 0);
-                }
-                e.Damage = e.Damage + damage;
-                return;
-            }
-            #endregion
+                    if (e.Damage >= e.Npc.life)
+                    {
+                        return;
+                    }
+                    int damage = (info.Str * 3);
+                    if (damage > 0)
+                    {
+                           NetMessage.SendData((int)PacketTypes.CreateCombatText, -1, -1, "+" + damage, (int)melee.PackedValue, e.Npc.position.X, e.Npc.position.Y, 0, 0, 0, 0);
+                    }
+                    
+                    e.Damage = e.Damage + damage;
 
-            #region Rango
-            if (TShock.Players[e.Player.whoAmI].SelectedItem.ranged)
-            {
-                if (e.Damage >= e.Npc.life)
-                {
                     return;
                 }
-                int damage = (info.Str * 3);
-                if (damage > 0)
-                {
-                    NetMessage.SendData((int)PacketTypes.CreateCombatText, -1, -1, "+" + damage, (int)ranged.PackedValue, e.Npc.position.X, e.Npc.position.Y, 0, 0, 0, 0);
-                }
-                e.Damage = e.Damage + damage;
-                return;
-            }
-            #endregion
+                #endregion
 
-            #region Magia
-            if (TShock.Players[e.Player.whoAmI].SelectedItem.magic)
-            {
-                if (e.Damage >= e.Npc.life)
+                #region Rango
+                if (TShock.Players[e.Player.whoAmI].SelectedItem.ranged)
                 {
+                    if (e.Damage >= e.Npc.life)
+                    {
+                        return;
+                    }
+                    int damage = (info.Str * 3);
+                    if (damage > 0)
+                    {
+                        NetMessage.SendData((int)PacketTypes.CreateCombatText, -1, -1, "+" + damage, (int)ranged.PackedValue, e.Npc.position.X, e.Npc.position.Y, 0, 0, 0, 0);
+                    }
+                    e.Damage = e.Damage + damage;
                     return;
                 }
-                int damage = (info._Int * 3);
-                if (damage > 0)
+                #endregion
+
+                #region Magia
+                if (TShock.Players[e.Player.whoAmI].SelectedItem.magic)
                 {
-                    NetMessage.SendData((int)PacketTypes.CreateCombatText, -1, -1, "+" + damage, (int)magic.PackedValue, e.Npc.position.X, e.Npc.position.Y, 0, 0, 0, 0);
+                    if (e.Damage >= e.Npc.life)
+                    {
+                        return;
+                    }
+                    int damage = (info._Int * 3);
+                    if (damage > 0)
+                    {
+                        NetMessage.SendData((int)PacketTypes.CreateCombatText, -1, -1, "+" + damage, (int)magic.PackedValue, e.Npc.position.X, e.Npc.position.Y, 0, 0, 0, 0);
+                    }
+                    e.Damage = e.Damage + damage;
+                    return;
                 }
-                e.Damage = e.Damage + damage;
-                return;
-            }
-            #endregion
+                #endregion
         }
         #endregion
 
