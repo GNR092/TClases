@@ -1,0 +1,56 @@
+/*
+Author: GNR092
+Create: 1/12/2017
+Plantilla: Accesorios
+	Criterios de para agregar un item y su respectio nivel en este archivo se maneja todo lo que sea accesorios y alas(wings)
+	con melee son referente a cuerpo a cuerpo.
+	Ranged los de rango.
+	Magic magicas
+	se compone de 2 simples cosas a agregar ejemplo: 
+		"ItemID": Nivel,//Nombre del item
+		"892": 30,//Vitaminas
+	asi es el formato para agregar items considere usted el nivel a poner segun avence configurara respectivamente y se balanceara
+	dado que son muchos item he agregado algunos y estoy mal favor de ponerle una nota con // de que se movio
+	cualquier cosa favor de contactar en facebook https://www.facebook.com/projectterra/ o directamente a mi Facebook https://www.facebook.com/GNR092
+	cualquier duda puedes preguntar igual estoy en Discord https://discord.gg/EYTBgHP
+	links de donde ver los Internal Item ID: https://terraria.gamepedia.com/Accessory 
+*/
+{
+	"MiscMele":{
+		"490": 1,//Warrior Emblem
+		"897": 10,//Power Glove
+		"3366": 20,//Yoyo Bag
+		"3016": 30,//Flesh Knuckles
+		"938": 50,//Paladin's Shield
+		"936": 70,//Mechanical Glove
+		"1301": 90,//Destroyer Emblem
+		"1343": 100,//Fire Gauntlet
+	},
+	"MiscRanged":{
+		"491": 1,//Ranger Emblem
+		"1321": 10,//Magic Quiver
+		"1300": 20,//Rifle Scope
+		"3015": 30,//Putrid Scent
+		"1248": 50,//Eye of the Golem
+		"935": 70,//Avenger Emblem
+		"1858": 100,//Sniper Scope
+	},
+	"MiscMagic":{
+		"01": 999,
+		"02": 999,
+		"01": 999,
+		"02": 999,
+		"01": 999,
+		"02": 999,
+		"01": 999,
+		"02": 999,
+	},
+	"MiscWings":{
+		"01": 999,
+		"02": 999,
+		"01": 999,
+		"02": 999,
+		"01": 999,
+		"02": 999,
+	}
+}

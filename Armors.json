@@ -1,0 +1,160 @@
+﻿/*
+Author: GNR092
+Create: 1/12/2017
+Plantilla: Armaduras
+    Criterios de para agregar un item y su respectio nivel en este archivo se maneja todo lo que sea accesorios y alas(wings)
+    con melee son referente a cuerpo a cuerpo.
+    Ranged los de rango.
+    Magic magicas
+    se compone de 2 simples cosas a agregar ejemplo: 
+        "ItemID": Nivel,//Nombre del item
+        "892": 30,//Vitaminas
+    asi es el formato para agregar items considere usted el nivel a poner segun avence configurara respectivamente y se balanceara
+    dado que son muchos item he agregado algunos y estoy mal favor de ponerle una nota con // de que se movio
+    cualquier cosa favor de contactar en facebook https://www.facebook.com/projectterra/ o directamente a mi Facebook https://www.facebook.com/GNR092
+    cualquier duda puedes preguntar igual estoy en Discord https://discord.gg/EYTBgHP
+    links de donde ver los Internal Item ID: https://terraria.gamepedia.com/Accessory 
+*/
+{
+  "ArmorMele": {
+    "372": 10,//Cobalto
+    "1205": 20,//Palladium
+    "377": 30,//Mythril
+    "1210": 40,//Orichalcum
+    "401": 50,//Adamantita
+    "1215": 60,//Titanium
+    "559": 70,//Bendecida
+    "101": 80,//Chlorofila
+    "1316": 85,//Turtle
+    "1317": 85,//Turtle
+    "1318": 85,//Turtle
+    //Beetle
+    "2199":90,
+    "2200":90,
+    "2201":90,
+    "2202":90,
+    //Solar
+    "2763":100,
+    "2764":100,
+    "2765":100
+  },
+  "ArmorRanged": {
+    "373": 10,//Cobalto
+    "1206": 20,//Palladium
+    "378": 30,//Mythril
+    "1211": 40,//Orichalcum
+    "402": 50,//Adamantita
+    "1216": 60,//Titanium
+    "553": 70,//Bendecida
+    "102": 80,//Chlorofila
+    //Shroomite 
+    "1546":90,
+    "1547":90,
+    "1548":90,
+    "1549":90,
+    "1550":90,
+    //Vortex
+    "2757":100,
+    "2758":100,
+    "2759":100
+  },
+  "ArmorMagic": {
+    "371": 10,//Cobalto
+    "1207": 20,//Palladium
+    "376": 30,//Mythril
+    "1212": 40,//Orichalcum
+    "400": 50,//Adamantita
+    "1217": 60,//Titanium
+    "558": 70,//Bendecida
+    "103": 80,//Chlorofila
+    //Spectre
+    "1503":90,
+    "1504":90,
+    "1505":90,
+    "2189":90,
+    //Nebula
+    "2760":100,
+    "2761":100,
+    "2762":100
+  },
+
+  "ComunArmor":{
+    //---------------------Items---------------------------------//
+    //Shield of Cthulhu
+    "3097":10,
+    //Brain of Confusion
+    "3223":15,
+    //Worm Scarf
+    "3224":15,
+    //Hive Pack
+    "3333":15,
+    //Spore Sac
+    "3336":40,
+    //Shiny Stone
+    "3337":45,
+    //Gravity Globe
+    "1131":90,
+    //Ankh Shield
+    "1613": 90,
+    //------------------Armors----------------------------------//
+    //Cobalto
+    "374":10,
+    "375":10,
+     //Palladium
+    "1208":20,
+    "1209":20,
+     //Mytrhil
+    "379":30,
+    "380":30,
+    //Orichalcum 
+    "1213":40,
+    "1214":40,
+    //Adamantite 
+    "403":50,
+    "404":50,
+    //Titanium
+    "1218":60,
+    "1219":60,
+    //Hallowed 
+    "551":70,
+    "552":70,
+     //Chlorophyte 
+    "104":80,
+    "105":80,
+    //--------------------DDG2--------------------------------//
+    //Apprentice's 
+    "3797":30,
+    "3798":30,
+    "3799":30,
+    //Squire 
+    "3800":30,
+    "3801":30,
+    "3802":30,
+    //Huntress 
+    "3803":30,
+    "3804":30,
+    "3805":30,
+    //Monk
+    "3806":30,
+    "3807":30,
+    "3808":30,
+     //Valhalla Knight
+    "3871":50,
+    "3872":50,
+    "3873":50,
+    //Dark Artist
+    "3874":50,
+    "3875":50,
+    "3876":50,
+    //Red Riding 
+    "3877":50,
+    "3878":50,
+    "3879":50,
+    //Shinobi Infiltrator 
+    "3880":50,
+    "3881":50,
+    "3882":50
+    //------------------------------------------------------//
+  }
+  
+}
